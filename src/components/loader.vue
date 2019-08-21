@@ -18,7 +18,7 @@
 }
 
 .loader {
-  background: rgba(5, 5, 5, 0.25);
+  background: rgba(255, 255, 255, 0.95);
   justify-content: center;
   flex-direction: column;
   align-items: center;

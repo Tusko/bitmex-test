@@ -3,10 +3,12 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import axios from "axios";
+import Notifications from "vue-notification";
 import config from "./config";
 const WebSocket = require("isomorphic-ws");
 
 Vue.config.productionTip = false;
+Vue.use(Notifications);
 
 Vue.prototype.$http = axios.create({
   baseURL: config.apiUrl,

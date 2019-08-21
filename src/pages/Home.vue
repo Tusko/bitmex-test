@@ -7,8 +7,17 @@
         <th>Last price</th>
       </thead>
       <tbody>
-        <tr v-for="ins in instruments" :key="ins.symbol">
-          <td>{{ ins.symbol }}</td>
+        <tr
+          v-for="ins in instruments"
+          :key="ins.symbol"
+          @click="$router.push('/order/' + ins.symbol)"
+        >
+          <td>
+            <div class="instrument-name">
+              <i class="icon-detailed-price" @click.stop="$router.push('/trade/' + ins.symbol)">i</i>
+              <span>{{ ins.symbol }}</span>
+            </div>
+          </td>
           <td>{{ ins.lastPrice }}</td>
         </tr>
       </tbody>
@@ -17,7 +26,7 @@
 </template>
 
 <script>
-import { forEach } from "lodash";
+import { forEach, has } from "lodash";
 
 export default {
   name: "home",
@@ -47,17 +56,14 @@ export default {
 
     vm.$socket.onmessage = response => {
       const update = JSON.parse(response.data);
-      console.log(update.data);
-
       forEach(update.data, newobj => {
-        console.log(vm.getUIndex(newobj.symbol));
-        if (vm.getUIndex(newobj.symbol) === -1) {
+        if (!has(newobj, "lastPrice")) return; //prevent updating if not has lastPrice key
+        const inx = vm.getUIndex(newobj.symbol);
+
+        if (inx === -1) {
           vm.instruments.push(newobj);
         } else {
-          vm.instruments[vm.getUIndex(newobj.symbol)] = {
-            ...vm.instruments[vm.getUIndex(newobj.symbol)],
-            ...newobj
-          };
+          vm.instruments[inx].lastPrice = newobj.lastPrice;
         }
       });
     };
@@ -77,25 +83,27 @@ export default {
   align-items: center;
   min-height: 100vh;
   display: flex;
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    th {
-      letter-spacing: 0.5px;
-      border-color: #e12e27;
-      background: #e12e27;
-      text-align: left;
+  tr {
+    cursor: pointer;
+    &:hover td {
+      background: #333;
       color: #fff;
     }
-    th,
-    td {
-      border: 1px solid #f5f5f5;
-      padding: 10px;
-    }
-    tr:hover td {
-      background: #f8f8f8;
-      cursor: pointer;
-    }
+  }
+}
+
+.instrument-name {
+  align-items: center;
+  display: flex;
+  i {
+    font: normal 700 18px/24px "Roboto";
+    border-radius: 50%;
+    text-align: center;
+    margin-right: 20px;
+    background: red;
+    cursor: pointer;
+    color: #fff;
+    width: 24px;
   }
 }
 </style>
