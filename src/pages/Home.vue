@@ -43,7 +43,12 @@ export default {
         this.instruments = response.data;
       })
       .catch(e => {
-        console.error(e);
+        this.$notify({
+          group: "app",
+          type: "error",
+          title: "Error",
+          text: e.message
+        });
       });
   },
   beforeMount() {

@@ -3,10 +3,10 @@ import config from "../config";
 const axios = require("axios"),
   crypto = require("crypto");
 
-function apiAuthRequest(method = "POST", url, data = {}) {
+function apiAuthRequest(method = "POST", url, data = "") {
   const path = "/api/v1" + url,
     expires = Math.round(new Date().getTime() / 1000) + 60,
-    postBody = JSON.stringify(data),
+    postBody = data ? JSON.stringify(data) : data,
     headers = {
       "content-type": "application/json",
       Accept: "application/json",

@@ -2,7 +2,7 @@
   <div class="trade-details">
     <header class="app-title">
       <span @click="$router.go(-1)">&#8249;</span>
-      <h1>Create Order: {{ form.symbol }}</h1>
+      <h1>Create Order for {{ form.symbol }}</h1>
     </header>
     <loader v-if="!form.symbol" />
     <form v-else novalidate @submit.prevent="createOrder">
@@ -40,6 +40,7 @@ form {
 
 <script>
 import { apiAuthRequest } from "@/utils";
+
 export default {
   name: "createOrder",
   components: {

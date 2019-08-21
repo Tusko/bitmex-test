@@ -31,8 +31,8 @@ export default new Router({
     },
     {
       path: "/history",
-      name: "orderForm",
-      component: getRouteTpl("OrderCreate")
+      name: "orderHistory",
+      component: getRouteTpl("History")
     }
   ]
 });
