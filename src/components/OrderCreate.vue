@@ -1,11 +1,11 @@
 <template>
   <div class="trade-details">
     <header class="app-title">
-      <span @click="$router.go(-1)">&#8249;</span>
-      <h1>Create Order for {{ form.symbol }}</h1>
+      <span @click="$emit('clear', null)">&times;</span>
+      <h2>Create Order for {{ form.symbol }}</h2>
     </header>
     <loader v-if="!form.symbol" />
-    <form v-else novalidate @submit.prevent="createOrder">
+    <form v-else novalidate @submit.prevent="createOrderSubmit">
       <p class="form-row form-checkbox">
         <span>Buy</span>
         <input type="checkbox" v-model="orderCheck" />
@@ -33,8 +33,9 @@
 
 <style lang="scss">
 form {
-  max-width: 400px;
   margin: 0 auto;
+  padding: 20px 40px;
+  width: 320px;
 }
 </style>
 
@@ -46,6 +47,12 @@ export default {
   components: {
     loader: () => import("@/components/loader")
   },
+  props: {
+    symbol: {
+      type: String,
+      default: null
+    }
+  },
   data: () => ({
     orderCheck: false,
     form: {
@@ -56,7 +63,7 @@ export default {
     }
   }),
   created() {
-    this.$set(this.form, "symbol", this.$route.params.symbol);
+    this.$set(this.form, "symbol", this.symbol);
   },
   watch: {
     orderCheck: function(val) {
@@ -67,7 +74,7 @@ export default {
     }
   },
   methods: {
-    createOrder(e) {
+    createOrderSubmit(e) {
       e.preventDefault();
 
       apiAuthRequest("POST", "/order", this.form)
@@ -76,16 +83,16 @@ export default {
             group: "app",
             type: "success",
             title: "Success!",
-            text: "Jobs done. Redirection..."
+            text: "Jobs done"
           });
-          this.$router.push({ path: "/history" });
+          this.$emit("clear", null);
         })
         .catch(e => {
           this.$notify({
             group: "app",
             type: "error",
             title: "Error",
-            text: e.message
+            text: e.response.data.error.message
           });
         });
     }

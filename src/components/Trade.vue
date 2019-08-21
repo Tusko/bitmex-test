@@ -1,8 +1,11 @@
 <template>
   <div class="trade-details">
     <header class="app-title">
-      <span @click="$router.go(-1)">&#8249;</span>
-      <h1>Trade for {{ symbol }}</h1>
+      <span @click="$emit('clear', null)">&#8249;</span>
+      <h2>
+        Trade Bucketed
+        <strong>{{ symbol }}</strong>
+      </h2>
     </header>
     <loader v-if="rows.length === 0" />
     <table v-else>
@@ -32,22 +35,28 @@
 <script>
 import { has } from "lodash";
 import { dateFilter } from "vue-date-fns"; // https://date-fns.org/docs/Getting-Started
+const WebSocket = require("isomorphic-ws");
+const appSocketIO = new WebSocket(config.socketUrl);
+import config from "@/config";
 
 export default {
   name: "trade",
   components: {
     loader: () => import("@/components/loader")
   },
+  props: {
+    symbol: {
+      type: String,
+      default: null
+    }
+  },
   filters: {
     date: dateFilter
   },
   data: () => ({
-    symbol: null,
     rows: []
   }),
   created() {
-    this.$set(this, "symbol", this.$route.params.symbol);
-
     this.$http
       .get(
         "/trade/bucketed?binSize=1m&partial=false&count=100&reverse=true&symbol=" +
@@ -61,27 +70,31 @@ export default {
           group: "app",
           type: "error",
           title: "Error",
-          text: e.message
+          text: e.response.data.error.message
         });
       });
   },
-  beforeMount() {
+  mounted() {
     const vm = this;
 
-    vm.$socket.onopen = () => {
-      console.log("Socket connected");
-      vm.$socket.send(
+    appSocketIO.onopen = () => {
+      appSocketIO.send(
         `{"op": "subscribe", "args": "tradeBin1m:` + this.symbol + `"}`
       );
     };
 
-    vm.$socket.onmessage = response => {
+    appSocketIO.onmessage = response => {
       const update = JSON.parse(response.data);
       if (has(update, "data") && update.action === "insert") {
         const updatedRows = [...update.data, ...vm.rows];
         vm.rows = updatedRows.splice(0, 99);
       }
     };
+  },
+  beforeDestroy() {
+    appSocketIO.send(
+      `{"op": "unsubscribe", "args": "tradeBin1m:` + this.symbol + `"}`
+    );
   }
 };
 </script>

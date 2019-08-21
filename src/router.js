@@ -18,21 +18,6 @@ export default new Router({
       path: "/",
       name: "home",
       component: getRouteTpl("Home")
-    },
-    {
-      path: "/trade/:symbol",
-      name: "tradeRable",
-      component: getRouteTpl("Trade")
-    },
-    {
-      path: "/order/:symbol",
-      name: "orderForm",
-      component: getRouteTpl("OrderCreate")
-    },
-    {
-      path: "/history",
-      name: "orderHistory",
-      component: getRouteTpl("History")
     }
   ]
 });

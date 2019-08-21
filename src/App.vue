@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <app-menu />
     <router-view />
     <notifications group="app" />
   </div>
@@ -10,9 +9,6 @@
 
 <script>
 export default {
-  name: "App",
-  components: {
-    "app-menu": () => import("./components/menu")
-  }
+  name: "App"
 };
 </script>
