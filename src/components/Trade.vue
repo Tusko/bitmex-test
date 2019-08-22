@@ -1,7 +1,7 @@
 <template>
   <div class="trade-details">
     <header class="app-title">
-      <span @click="$emit('clear', null)">&#8249;</span>
+      <!-- <span @click="$emit('clear', null)">&#8249;</span> -->
       <h2>
         Trade Bucketed
         <strong>{{ symbol }}</strong>
@@ -31,12 +31,10 @@
   </div>
 </template>
 
-
 <script>
 import { has } from "lodash";
 import { dateFilter } from "vue-date-fns"; // https://date-fns.org/docs/Getting-Started
 const WebSocket = require("isomorphic-ws");
-const appSocketIO = new WebSocket(config.socketUrl);
 import config from "@/config";
 
 export default {
@@ -54,7 +52,8 @@ export default {
     date: dateFilter
   },
   data: () => ({
-    rows: []
+    rows: [],
+    tradeSocket: new WebSocket(config.socketUrl)
   }),
   created() {
     this.$http
@@ -77,13 +76,13 @@ export default {
   mounted() {
     const vm = this;
 
-    appSocketIO.onopen = () => {
-      appSocketIO.send(
+    vm.tradeSocket.onopen = () => {
+      vm.tradeSocket.send(
         `{"op": "subscribe", "args": "tradeBin1m:` + this.symbol + `"}`
       );
     };
 
-    appSocketIO.onmessage = response => {
+    vm.tradeSocket.onmessage = response => {
       const update = JSON.parse(response.data);
       if (has(update, "data") && update.action === "insert") {
         const updatedRows = [...update.data, ...vm.rows];
@@ -92,26 +91,9 @@ export default {
     };
   },
   beforeDestroy() {
-    appSocketIO.send(
+    this.tradeSocket.send(
       `{"op": "unsubscribe", "args": "tradeBin1m:` + this.symbol + `"}`
     );
   }
 };
 </script>
-
-<style lang="scss">
-.trade-details {
-  header {
-    align-items: center;
-    display: flex;
-    span {
-      cursor: pointer;
-      font-size: 40px;
-      margin: 0 20px;
-      &:hover {
-        color: red;
-      }
-    }
-  }
-}
-</style>

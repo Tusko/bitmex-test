@@ -1,11 +1,10 @@
 <template>
-  <div class="trade-details">
+  <div class="trade-order" v-if="symbol">
     <header class="app-title">
-      <span @click="$emit('clear', null)">&times;</span>
+      <!-- <span @click="$emit('clear', null)">&times;</span> -->
       <h2>Create Order for {{ form.symbol }}</h2>
     </header>
-    <loader v-if="!form.symbol" />
-    <form v-else novalidate @submit.prevent="createOrderSubmit">
+    <form novalidate @submit.prevent="createOrderSubmit">
       <p class="form-row form-checkbox">
         <span>Buy</span>
         <input type="checkbox" v-model="orderCheck" />
@@ -33,9 +32,8 @@
 
 <style lang="scss">
 form {
-  margin: 0 auto;
   padding: 20px 40px;
-  width: 320px;
+  margin: 0 auto;
 }
 </style>
 
@@ -44,9 +42,6 @@ import { apiAuthRequest } from "@/utils";
 
 export default {
   name: "createOrder",
-  components: {
-    loader: () => import("@/components/loader")
-  },
   props: {
     symbol: {
       type: String,

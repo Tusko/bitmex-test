@@ -31,14 +31,16 @@ table {
 }
 
 .app-title {
-  align-items: center;
-  display: flex;
-  span {
-    cursor: pointer;
-    font-size: 40px;
-    margin: 0 20px;
-    &:hover {
-      color: red;
-    }
+  padding: 10px 40px;
+  .trade-details & {
+    text-align: center;
   }
+  // span {
+  //   cursor: pointer;
+  //   font-size: 40px;
+  //   margin: 0 20px;
+  //   &:hover {
+  //     color: red;
+  //   }
+  // }
 }

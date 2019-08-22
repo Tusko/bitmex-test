@@ -7,17 +7,9 @@
         <th>Last price</th>
       </thead>
       <tbody>
-        <tr
-          v-for="ins in instruments"
-          :key="ins.symbol"
-          @click="instrumentChooseEvent('order', ins.symbol)"
-        >
+        <tr v-for="ins in instruments" :key="ins.symbol" @click="$emit('getSymbol', ins.symbol)">
           <td>
             <div class="instrument-name">
-              <i
-                class="icon-detailed-price"
-                @click.stop="instrumentChooseEvent('trade', ins.symbol)"
-              >i</i>
               <span>{{ ins.symbol }}</span>
             </div>
           </td>
@@ -31,7 +23,6 @@
 <script>
 import { forEach, has } from "lodash";
 const WebSocket = require("isomorphic-ws");
-const appSocketIO = new WebSocket(config.socketUrl);
 import config from "@/config";
 
 export default {
@@ -47,6 +38,10 @@ export default {
       .get("/instrument/active")
       .then(response => {
         this.$set(this, "instruments", response.data);
+
+        this.$nextTick(() => {
+          this.$emit("getSymbol", this.instruments[0].symbol);
+        });
       })
       .catch(e => {
         this.$notify({
@@ -59,6 +54,7 @@ export default {
   },
   beforeMount() {
     const vm = this;
+    const appSocketIO = new WebSocket(config.socketUrl);
 
     appSocketIO.onopen = () => {
       appSocketIO.send(`{"op": "subscribe", "args": "instrument"}`);
@@ -81,42 +77,15 @@ export default {
   methods: {
     getUIndex(name) {
       return this.instruments.map(item => item.symbol).indexOf(name); // find index of your object
-    },
-    instrumentChooseEvent(event, value) {
-      this.$emit(event, value);
     }
   }
 };
 </script>
 
 <style lang="scss">
-.instruments {
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  display: flex;
-  tr {
-    cursor: pointer;
-    &:hover td {
-      background: #333;
-      color: #fff;
-    }
-  }
-}
-
-.instrument-name {
-  align-items: center;
-  display: flex;
-  i {
-    font: normal 700 18px/24px "Roboto";
-    border-radius: 50%;
-    text-align: center;
-    margin-right: 20px;
-    background: red;
-    cursor: pointer;
-    color: #fff;
-    width: 24px;
-  }
+.instruments tr:hover td {
+  background: #303030;
+  cursor: pointer;
+  color: #fff;
 }
 </style>

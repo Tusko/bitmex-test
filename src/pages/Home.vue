@@ -1,14 +1,9 @@
 <template>
   <div class="home">
     <section class="home-grid">
-      <instruments @trade="tradeChosenEv" @order="createOrderEv" />
-      <trade v-if="tradeSymbol" :symbol="tradeSymbol" @clear="tradeChosenEv" />
-      <order-create
-        v-if="orderSymbol"
-        :key="orderSymbol"
-        :symbol="orderSymbol"
-        @clear="createOrderEv"
-      />
+      <instruments @getSymbol="chosenSymbol" />
+      <trade v-if="symbol" :key="'t-' + symbol" :symbol="symbol" />
+      <order-create v-if="symbol" :key="'o-' + symbol" :symbol="symbol" />
     </section>
     <history />
   </div>
@@ -18,8 +13,7 @@
 export default {
   name: "home",
   data: () => ({
-    tradeSymbol: null,
-    orderSymbol: null
+    symbol: null
   }),
   components: {
     instruments: () => import("@/components/Instruments"),
@@ -28,13 +22,8 @@ export default {
     "order-create": () => import("@/components/OrderCreate")
   },
   methods: {
-    tradeChosenEv(e) {
-      this.$set(this, "tradeSymbol", e);
-      this.$set(this, "orderSymbol", null);
-    },
-    createOrderEv(e) {
-      this.$set(this, "orderSymbol", this.orderSymbol == e ? null : e);
-      this.$set(this, "tradeSymbol", null);
+    chosenSymbol(e) {
+      this.$set(this, "symbol", e);
     }
   }
 };
@@ -46,6 +35,13 @@ export default {
     justify-content: space-between;
     align-items: flex-start;
     display: flex;
+  }
+  .instruments,
+  .trade-order {
+    flex-basis: 320px;
+  }
+  .trade-details {
+    flex: 1;
   }
 }
 </style>

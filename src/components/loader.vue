@@ -25,6 +25,7 @@
   color: #e12e27;
   position: fixed;
   display: flex;
+  z-index: 999;
   bottom: 0;
   right: 0;
   left: 0;
