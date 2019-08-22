@@ -22,8 +22,9 @@
   justify-content: center;
   flex-direction: column;
   align-items: center;
+  position: absolute;
+  min-height: 100vh;
   color: #e12e27;
-  position: fixed;
   display: flex;
   z-index: 999;
   bottom: 0;

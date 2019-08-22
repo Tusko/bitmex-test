@@ -35,6 +35,9 @@ export default {
     justify-content: space-between;
     align-items: flex-start;
     display: flex;
+    > * {
+      position: relative;
+    }
   }
   .instruments,
   .trade-order {
