@@ -17,9 +17,9 @@
     "ws": "^7.4.6"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.10.0",
-    "@vue/cli-plugin-eslint": "^3.10.0",
-    "@vue/cli-service": "^3.10.0",
+    "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
     "@vue/eslint-config-prettier": "^5.0.0",
     "vue-date-fns": "^1.1.0",
     "axios": "^0.21.1",
@@ -29,7 +29,7 @@
     "eslint-plugin-vue": "^5.0.0",
     "node-sass": "^4.13.1",
     "prettier": "^1.18.2",
-    "sass-loader": "^7.1.0",
+    "sass-loader": "^13.2.0",
     "vue-template-compiler": "^2.6.10"
   }
 }
